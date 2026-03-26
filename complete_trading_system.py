@@ -16,7 +16,7 @@ class CompleteTradingSystem:
     self.web_interface = WebAdminInterface(self, port=8500)
     self.metrics_collector = MetricsCollector()
     
-  async def start(self):
+async def start(self):
     """Start all components"""
     print("="*60)
     print("🚀 Complete Trading System v2.0")
