@@ -1,0 +1,64 @@
+# ============= Deployment Configuration =============
+
+# kubernetes/deployment.yaml
+deployment_yaml = """
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trading-agent
+  namespace: trading
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: trading-agent
+  template:
+    metadata:
+      labels:
+        app: trading-agent
+    spec:
+      containers:
+      - name: trading-agent
+        image: trading-agent:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_PATH
+          value: "/data/trading_agent.db"
+        - name: MAX_POSITION_SIZE
+          value: "100000"
+        - name: MAX_DAILY_LOSS
+          value: "10000"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /app/config
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: trading-data-pvc
+      - name: config
+        secret:
+          secretName: trading-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trading-agent-service
+spec:
+  selector:
+    app: trading-agent
+  ports:
+  - port: 8000
+    targetPort: 8000
+  type: LoadBalancer
+"""
+

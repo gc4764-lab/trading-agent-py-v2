@@ -1,0 +1,38 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  trading-agent:
+    build: .
+    container_name: trading-agent
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+    environment:
+      - DATABASE_PATH=/app/data/trading_agent.db
+      - MAX_POSITION_SIZE=100000
+      - MAX_DAILY_LOSS=10000
+      - RISK_PER_TRADE=0.02
+      - OLLAMA_MODEL=llama2
+    restart: unless-stopped
+    networks:
+      - trading-network
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama-models:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - trading-network
+
+networks:
+  trading-network:
+    driver: bridge
+    

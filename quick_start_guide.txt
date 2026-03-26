@@ -1,0 +1,106 @@
+git clone https://github.com/gc4764-lab/trading-agent-py-v2
+cd trading-agent-py-v2
+cp .env.example .env
+# Edit .env with your configuration
+
+pip install -r requirements.txt
+
+docker-compose -f docker-compose.prod.yml up -d
+
+# Development mode
+python complete_trading_agent.py
+
+# Production with Docker
+docker-compose -f docker-compose.prod.yml up -d
+
+# Kubernetes deployment
+kubectl apply -f kubernetes/complete-deployment.yaml
+
+
+Access interface
+web dashboard http://localhost:8500
+admin console http://localhost:8500/admin/dashboard
+grafana http://localhost:3000(admin/admin)
+prometheus http://localhost:9090
+
+
+
+X-API-Key: your-api-key-here
+
+POST /api/v1/orders/market
+{
+"symbol": "BTCUSD",
+"side": "buy",
+"quantity": 0.1
+}
+
+
+POST /api/v1/alerts/price
+{
+"symbol": "BTCUSD",
+"condition": "above",
+"price": 55000,
+"action": "order",
+"order_details": {
+"side": "buy",
+"quantity": 0.1
+}
+}
+
+
+GET /api/v1/ai/analyze/BTCUSD
+
+GET /api/v1/risk/metrics
+
+const ws = new WebSocket('ws://localhost:8000/ws');
+
+ws.onopen = () => {
+ws.send(JSON.stringify({
+type: 'subscribe',
+channels: ['price', 'orders', 'positions']
+}));
+};
+
+ws.onmessage = (event) => {
+const data = JSON.parse(event.data);
+console.log('Update:', data);
+};
+
+
+# Database
+DATABASE_URL=postgresql://user:pass@localhost/trading
+
+# Risk Management
+MAX_POSITION_SIZE=100000
+MAX_DAILY_LOSS=10000
+RISK_PER_TRADE=0.02
+
+# AI Model
+OLLAMA_MODEL=llama2
+AI_CONFIDENCE_THRESHOLD=70
+
+# Redis
+REDIS_URL=redis://localhost:6379
+
+# Security
+API_KEY_SECRET=your-secret-key
+ENCRYPTION_KEY=your-encryption-key
+
+kubectl apply -f kubernetes/complete-deployment.yaml
+kubectl get pods -n trading-system
+kubectl logs -f -n trading-system deployment/trading-agent
+
+
+
+webhook payload
+{
+"event": "order_filled",
+"data": {
+"order_id": "abc123",
+"symbol": "BTCUSD",
+"side": "buy",
+"quantity": 0.1,
+"price": 50000,
+"timestamp": "2024-01-01T00:00:00"
+}
+}

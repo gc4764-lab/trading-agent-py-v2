@@ -1,0 +1,11 @@
+# Unit tests
+pytest tests/unit
+
+# Integration tests
+pytest tests/integration
+
+# Performance tests
+pytest tests/performance
+
+# Coverage report
+pytest --cov=trading_agent --cov-report=html

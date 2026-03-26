@@ -1,0 +1,28 @@
+# prometheus/alerts.yml
+groups:
+  - name: trading_alerts
+    rules:
+      - alert: HighDrawdown
+        expr: trading_drawdown > 0.15
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High drawdown detected"
+          description: "Drawdown is {{ $value }}%"
+          
+      - alert: DailyLossLimit
+        expr: trading_daily_pnl < -10000
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Daily loss limit exceeded"
+          
+      - alert: HighRiskExposure
+        expr: trading_risk_exposure > 100000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High risk exposure"

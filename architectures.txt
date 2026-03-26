@@ -1,0 +1,8 @@
+Trading Agent
+├── Order Manager - Handles order placement and execution
+├── Risk Manager - Validates orders against risk rules
+├── Alert Manager - Monitors and triggers alerts
+├── AI Agent - Provides market analysis via Ollama
+├── Database Manager - Persistent storage
+└── Webhook Sender - External notifications
+
